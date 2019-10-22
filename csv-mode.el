@@ -1010,6 +1010,20 @@ point."
       (forward-line))
     (list column-widths (nreverse field-widths))))
 
+(require 'rx)
+
+(defvar csv-number-regexp
+  (rx bos
+      (optional (any "+-"))
+      (or (seq "." (1+ digit))
+          (seq (+ digit)
+               (optional "." (1+ digit))))
+      (optional (any "eE")
+                (optional (any "+-"))
+                (1+ digit))
+      eos)
+  "Regexp to match a numeric field.")
+
 (defun csv-align-fields (hard beg end)
   "Align all the fields in the region to form columns.
 The alignment style is specified by `csv-align-style'.  The number of
@@ -1070,7 +1084,7 @@ If there is no selected region, default to the whole buffer."
                     (setq left-padding (+ align-padding x)))
                    ((eq csv-align-style 'auto)
                     ;; Auto align -- left align text, right align numbers:
-                    (if (string-match "\\`[-+.[:digit:]]+\\'"
+                    (if (string-match csv-number-regexp
                                       (buffer-substring beg (point)))
                         ;; Right align -- pad on the left:
                         (setq left-padding (+ align-padding x))
