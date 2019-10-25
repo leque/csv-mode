@@ -1500,7 +1500,7 @@ If there is already a header line, then unset the header line."
                    (setq left-padding (+ align-padding x)))
                   ('auto
                    ;; Auto align -- left align text, right align numbers:
-                   (if (string-match "\\`[-+.[:digit:]]+\\'"
+                   (if (string-match csv-number-regexp
                                      (buffer-substring field-beg (point)))
                        ;; Right align -- pad on the left:
                        (setq left-padding (+ align-padding x))
